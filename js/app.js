@@ -1,11 +1,18 @@
- let restaurant = null;
+ 
 
+var platform = new H.service.Platform({
 
+	app_id: ' {3zGaOD2cy6cTNhzwclJw} ',
+	app_code: ' {wFzC3HVloYWs1lavwxph2Q} ',
+});
 
-fetch(`https://places.cit.api.here.com/places/v1/discover/explore?app_id=3zGaOD2cy6cTNhzwclJw&app_code=wFzC3HVloYWs1lavwxph2Q&at=-33.43727,-70.650556&pretty`)
- .then(response => response.json())
- .then(explorer =>{
-	 console.log(explorer);
-	 
- })
+var defaultLayers = plataforma.createDefaultLayers();
+var mapPlaceholder = documento.getElementById(' contenedor del mapa ');
 
+var map = new H.Map(
+	mapContainer,
+	defaultLayers.normal.mapa);
+
+ventana.addEventListener(' resize ', function () {
+	mapa.getViewPort().resize();
+});
