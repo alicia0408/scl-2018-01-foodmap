@@ -1,7 +1,66 @@
-// se invoca la api desde developer.here y muestra 20 restaurantes de la zona de santiago
-fetch(`https://places.cit.api.here.com/places/v1/discover/explore?app_id=3zGaOD2cy6cTNhzwclJw&app_code=wFzC3HVloYWs1lavwxph2Q&at=-33.43727,-70.650556&pretty`)
-	.then(response => response.json())
-	.then(explorer => {
-		console.log(explorer);
+var map;
+var infowindow;
 
-	})
+function initMap() {
+	// Creamos un mapa con las coordenadas actuales
+	navigator.geolocation.getCurrentPosition(function (pos) {
+
+		lat = pos.coords.latitude;
+		lon = pos.coords.longitude;
+
+		var myLatlng = new google.maps.LatLng(lat, lon);
+
+		var mapOptions = {
+			center: myLatlng,
+			zoom: 14,
+			mapTypeId: google.maps.MapTypeId.SATELLITE
+		};
+
+		map = new google.maps.Map(document.getElementById("mapa"), mapOptions);
+
+		// Creamos el infowindow
+		infowindow = new google.maps.InfoWindow();
+
+		// Especificamos la localización, el radio y el tipo de lugares que queremos obtener
+		var request = {
+			location: myLatlng,
+			radius: 5000,
+			types: ['restaurant']
+		};
+
+		// Creamos el servicio PlaceService y enviamos la petición.
+		var service = new google.maps.places.PlacesService(map);
+
+		service.nearbySearch(request, function (results, status) {
+			if (status === google.maps.places.PlacesServiceStatus.OK) {
+				for (var i = 0; i < results.length; i++) {
+					crearMarcador(results[i]);
+				}
+			}
+		});
+	});
+}
+
+function crearMarcador(place) {
+	// Creamos un marcador
+	var marker = new google.maps.Marker({
+		map: map,
+		position: place.geometry.location
+	});
+
+
+	// Asignamos el evento click del marcador
+	google.maps.event.addListener(marker, 'click', function () {
+		infowindow.setContent(place.name);
+		infowindow.open(map, this);
+	});
+}
+
+var service = new google.maps.places.PlacesService(map);
+service.getDetails({
+	placeId: place.place_id
+}, function (placeDetails, status) {
+	if (status == google.maps.places.PlacesServiceStatus.OK) {
+		alert('placeDetails.formatted_address');
+	}
+});
